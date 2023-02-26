@@ -13,7 +13,7 @@ export class ProductListComponent implements OnInit {
   products: Product[] = [];
   currentCategoryId: number = 1;
   constructor(private ProductService: ProductService,
-              private route: ActivatedRoute) { }
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(() => {
@@ -21,17 +21,18 @@ export class ProductListComponent implements OnInit {
     })
   }
 
-listProduct() {
-  // check if "id" parameter is available
-  const hasCateogryId: boolean = this.route.snapshot.paramMap.has('id');
-  if(hasCateogryId) {
-    //get the "id" param string. convert string to a number using + symbol
-    this.currentCategoryId = +this.route.snapshot.paramMap.get('id')!;
-  } else {
-    // not category found --> innit default value == 1
-    this.currentCategoryId = 1;
-  }
-  //get product by category id
+  listProduct() {
+    // check if "id" parameter is available
+    const hadCategoryId: boolean = this.route.snapshot.paramMap.has('id');
+
+    if (hadCategoryId) {
+      //get the "id" param string. convert string to a number using + symbol
+      this.currentCategoryId = +this.route.snapshot.paramMap.get('id')!;
+    } else {
+      // not category found --> innit default value == 1
+      this.currentCategoryId = 1;
+    }
+    //get product by category id
     this.ProductService.getProductList(this.currentCategoryId).subscribe(
       data => {
         this.products = data;
