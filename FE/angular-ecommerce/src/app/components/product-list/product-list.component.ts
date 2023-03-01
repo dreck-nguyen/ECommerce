@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CartItem } from 'src/app/common/cart-item';
 import { Product } from 'src/app/common/product';
 import { ProductService } from 'src/app/services/product.service';
+import { CartService } from 'src/app/services/cart.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list-grid.component.html',
   styleUrls: ['./product-list.component.css']
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnDestroy {
 
   products: Product[] = [];
   currentCategoryId: number = 1;
@@ -18,8 +21,9 @@ export class ProductListComponent implements OnInit {
   thePageNumber: number = 1;
   thePageSize: number = 10;
   theTotalElements: number = 0;
-
+  _destroy = new Subject()
   constructor(private ProductService: ProductService,
+    private cartService: CartService,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -79,10 +83,20 @@ export class ProductListComponent implements OnInit {
   handleSearchProducts() {
     const theKeyWord: string = this.route.snapshot.paramMap.get('keyword')!;
     // search for the products using keyword
-    this.ProductService.searchProducts(theKeyWord).subscribe(
+    this.ProductService.searchProducts(theKeyWord).pipe(takeUntil(this._destroy)).subscribe(
       data => {
         this.products = data;
       }
     )
+  }
+  addToCart(theProduct: Product) {
+    console.log(`Adding to cart: ${theProduct.name}, ${theProduct.unitPrice}`);
+
+    const theCartItem = new CartItem(theProduct);
+    this.cartService.addToCart(theCartItem);
+  }
+
+  ngOnDestroy(): void {
+    this._destroy.unsubscribe();
   }
 }
