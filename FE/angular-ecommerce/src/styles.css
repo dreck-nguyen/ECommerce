@@ -548,7 +548,7 @@ input.au-input.au-input-xl {
 }
 
 .main-content.page-m {
-  padding: 10% 15% !important
+  padding: 10% 30% 10% 5%
 }
 
 /*
@@ -784,9 +784,9 @@ table.table.table-bordered th {
   margin-top: 60px
 }
 
-.detail-img{
-  width:30%;
-  
+.detail-img {
+  width: 30%;
+
 }
 
 /**/

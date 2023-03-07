@@ -22,6 +22,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   thePageSize: number = 10;
   theTotalElements: number = 0;
   _destroy = new Subject()
+  
   constructor(private ProductService: ProductService,
     private cartService: CartService,
     private route: ActivatedRoute) { }
