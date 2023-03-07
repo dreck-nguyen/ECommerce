@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { Luv2ShopFormService } from 'src/app/services/luv2-shop-form.service';
 
 @Component({
@@ -9,17 +9,19 @@ import { Luv2ShopFormService } from 'src/app/services/luv2-shop-form.service';
 })
 export class CheckoutComponent implements OnInit {
 
-  checkoutFormGroup!: FormGroup;
-  totalPrice: number = 1;
-  totalQuantity: number = 1;
+  checkoutFormGroup: any;
+
+  totalPrice: number = 0;
+  totalQuantity: number = 0;
+
   creditCardYears: number[] = [];
   creditCardMonths: number[] = [];
 
-
   constructor(private formBuilder: FormBuilder,
-    private luv2ShopService: Luv2ShopFormService) { }
+    private luv2ShopFormService: Luv2ShopFormService) { }
 
   ngOnInit(): void {
+
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
         firstName: [''],
@@ -27,10 +29,10 @@ export class CheckoutComponent implements OnInit {
         email: ['']
       }),
       shippingAddress: this.formBuilder.group({
-        country: [''],
         street: [''],
         city: [''],
         state: [''],
+        country: [''],
         zipCode: ['']
       }),
       billingAddress: this.formBuilder.group({
@@ -40,7 +42,7 @@ export class CheckoutComponent implements OnInit {
         country: [''],
         zipCode: ['']
       }),
-      creditCart: this.formBuilder.group({
+      creditCard: this.formBuilder.group({
         cardType: [''],
         nameOnCard: [''],
         cardNumber: [''],
@@ -49,41 +51,45 @@ export class CheckoutComponent implements OnInit {
         expirationYear: ['']
       })
     });
-    //  populate credit card month
+
+    // populate credit card months
 
     const startMonth: number = new Date().getMonth() + 1;
-    console.log("startMonth : " + startMonth);
+    console.log("startMonth: " + startMonth);
 
-    this.luv2ShopService.getCreditCardMonths(startMonth).subscribe(
+    this.luv2ShopFormService.getCreditCardMonths(startMonth).subscribe(
       data => {
         console.log("Retrieved credit card months: " + JSON.stringify(data));
         this.creditCardMonths = data;
       }
-    )
+    );
 
-    // populate credit card year
+    // populate credit card years
 
-    this.luv2ShopService.getCreditCardYears().subscribe(
-
+    this.luv2ShopFormService.getCreditCardYears().subscribe(
       data => {
-        console.log("Retrieved credit card year: " + JSON.stringify(data));
+        console.log("Retrieved credit card years: " + JSON.stringify(data));
         this.creditCardYears = data;
       }
-    )
-  }
-  onSubmit() {
-    console.log('Handling the submit button');
+    );
+
   }
 
   copyShippingAddressToBillingAddress(event: Event) {
     const isChecked = (<HTMLInputElement>event.target).checked;
-
     if (isChecked) {
       this.checkoutFormGroup.controls['billingAddress']
-        .setValue(this.checkoutFormGroup.controls['shippingAddress'].value);
-    } else {
+        .setValue(this.checkoutFormGroup.controls['billingAddress'].value);
+    }
+    else {
       this.checkoutFormGroup.controls['billingAddress'].reset();
     }
+
   }
 
+  onSubmit() {
+    console.log("Handling the submit button");
+    console.log(this.checkoutFormGroup.get('customer').value);
+    console.log("The email address is " + this.checkoutFormGroup.get('customer').value.email);
+  }
 }
