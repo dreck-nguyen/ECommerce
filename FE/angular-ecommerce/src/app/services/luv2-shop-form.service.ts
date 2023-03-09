@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Country } from '../common/country';
 import { map } from 'rxjs/operators';
-import { State } from '@popperjs/core';
+import { State } from '../common/state';
 @Injectable({
   providedIn: 'root'
 })
 export class Luv2ShopFormService {
-  private countriesUrl = 'localhost:8080/api/countries';
-  private statesUrl = 'localhost:8080/api/states';
+  private countriesUrl = 'http://localhost:8080/api/countries';
+  private statesUrl = 'http://localhost:8080/api/states';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -50,7 +50,7 @@ export class Luv2ShopFormService {
     );
   }
 
-  getState(theCountryCode: string): Observable<State[]> {
+  getStates(theCountryCode: string): Observable<State[]> {
     //search url
     const searchStateUrl = `${this.statesUrl}/search/findByCountryCode?code=${theCountryCode}`;
     return this.httpClient.get<GetResponseStates>(searchStateUrl).pipe(
