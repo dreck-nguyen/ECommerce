@@ -22,8 +22,8 @@ export class CheckoutComponent implements OnInit {
 
   countries: Country[] = [];
 
-  shippingAddressState: State[] = [];
-  billingAddressState: State[] = [];
+  shippingAddressStates: State[] = [];
+  billingAddressStates: State[] = [];
 
 
 
@@ -98,16 +98,16 @@ export class CheckoutComponent implements OnInit {
     const isChecked = (<HTMLInputElement>event.target).checked;
     if (isChecked) {
       this.checkoutFormGroup.controls['billingAddress']
-        .setValue(this.checkoutFormGroup.controls['billingAddress'].value);
+        .setValue(this.checkoutFormGroup.controls['shippingAddress'].value);
 
       //bug fix for states
-      this.billingAddressState = this.shippingAddressState;
+      this.billingAddressStates = this.shippingAddressStates;
     }
     else {
       this.checkoutFormGroup.controls['billingAddress'].reset();
 
       //bug fix fpr states
-      this.billingAddressState = [];
+      this.billingAddressStates = [];
     }
 
   }
@@ -145,7 +145,7 @@ export class CheckoutComponent implements OnInit {
     )
   }
 
-  getState(formGroupName: string) {
+  getStates(formGroupName: string) {
     const formGroup = this.checkoutFormGroup.get(formGroupName);
 
     const countryCode = formGroup.value.country.code;
@@ -156,9 +156,9 @@ export class CheckoutComponent implements OnInit {
     this.luv2ShopFormService.getStates(countryCode).subscribe(
       data => {
         if (formGroupName === 'shippingAddress') {
-          this.shippingAddressState = data;
+          this.shippingAddressStates = data;
         } else {
-          this.billingAddressState = data;
+          this.billingAddressStates = data;
         }
         // select first item by default
         formGroup.get('state').setValue(data[0]);
