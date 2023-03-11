@@ -16,7 +16,7 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    private int id;
+    private Long id;
 
     @Column(name="first_name")
     private String firstName;
@@ -30,13 +30,25 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private Set<Order> orders = new HashSet<>();
 
-    public void add(Order order){
-        if(order != null){
-            if(orders == null){
+    public void add(Order order) {
+
+        if (order != null) {
+
+            if (orders == null) {
                 orders = new HashSet<>();
             }
+
             orders.add(order);
-            order.setCustomer((this));
+            order.setCustomer(this);
         }
     }
+
 }
+
+
+
+
+
+
+
+
