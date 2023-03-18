@@ -28,6 +28,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
     public MyDataRestConfig(EntityManager entityManager){
         this.entityManager = entityManager;
     }
+
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         HttpMethod[] theUnsupportedActions = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE};
@@ -47,6 +48,9 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
         // call an internal helper method
         exposeIds(config);
+
+        //config the cors mapping
+        cors.addMapping("/api/**").allowedOrigins("http://localhost:4200");
     }
 
     private static void disableHttpMethods(Class theClass,RepositoryRestConfiguration config, HttpMethod[] theUnsupportedActions) {
