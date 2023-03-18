@@ -1,9 +1,10 @@
+import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 
 import { ProductListComponent } from './components/product-list/product-list.component';
-import { HttpClientModule } from '@angular/common/http'
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { ProductService } from './services/product.service';
 import { Router, RouterModule, Routes } from '@angular/router';
 import { ProductCategoryMenuComponent }
@@ -27,6 +28,7 @@ import {
 import { OktaAuth } from '@okta/okta-auth-js';
 import myAppConfig from './config/my-app-config';
 import { MembersPageComponent } from './components/members-page/members-page.component';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
 
 const oktaConfig = myAppConfig.oidc;
 const oktaAuth = new OktaAuth(oktaConfig);
@@ -49,7 +51,10 @@ const routes: Routes = [
     data: { onAuthRequired: sendToLoginPage }
   },
 
-
+  {
+    path: 'order-history', component: OrderHistoryComponent, canActivate: [OktaAuthGuard],
+    data: { onAuthRequired: sendToLoginPage }
+  },
   { path: 'checkout', component: CheckoutComponent },
   { path: 'cart-details', component: CartDetailsComponent },
   { path: 'products/:id', component: ProductDetailsComponent },
@@ -73,7 +78,8 @@ const routes: Routes = [
     CheckoutComponent,
     LoginComponent,
     LoginStatusComponent,
-    MembersPageComponent
+    MembersPageComponent,
+    OrderHistoryComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -83,7 +89,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     OktaAuthModule
   ],
-  providers: [ProductService, { provide: OKTA_CONFIG, useValue: { oktaAuth } }],
+  providers: [ProductService, { provide: OKTA_CONFIG, useValue: { oktaAuth } },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

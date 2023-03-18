@@ -1,10 +1,7 @@
 package com.ecommerce.springboot.config;
 
-import com.ecommerce.springboot.entity.Country;
-import com.ecommerce.springboot.entity.Product;
-import com.ecommerce.springboot.entity.ProductCategory;
+import com.ecommerce.springboot.entity.*;
 
-import com.ecommerce.springboot.entity.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -51,6 +48,8 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
         // disable HTTP methods for StateCategory: PUT, POST, DELETE
         disableHttpMethods(State.class, config, theUnsupportedActions);
 
+        // disable HTTP methods for OrderRepository: PUT, POST, DELETE
+        disableHttpMethods(Order.class, config, theUnsupportedActions);
 
         // call an internal helper method
         exposeIds(config);
